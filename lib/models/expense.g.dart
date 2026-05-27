@@ -71,6 +71,8 @@ class ExpenseCategoryAdapter extends TypeAdapter<ExpenseCategory> {
         return ExpenseCategory.school;
       case 5:
         return ExpenseCategory.other;
+      case 6:
+        return ExpenseCategory.entertainment;
       default:
         return ExpenseCategory.food;
     }
@@ -96,6 +98,9 @@ class ExpenseCategoryAdapter extends TypeAdapter<ExpenseCategory> {
         break;
       case ExpenseCategory.other:
         writer.writeByte(5);
+        break;
+      case ExpenseCategory.entertainment:
+        writer.writeByte(6);
         break;
     }
   }

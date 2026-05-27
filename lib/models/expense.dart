@@ -17,7 +17,7 @@ enum ExpenseCategory {
   @HiveField(5)
   other,
   @HiveField(6)
-  entertainment,
+  entertainment
 }
 
 extension ExpenseCategoryLabel on ExpenseCategory {
