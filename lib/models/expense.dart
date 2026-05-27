@@ -15,6 +15,8 @@ enum ExpenseCategory {
   @HiveField(4)
   school,
   @HiveField(5)
+  entertainment;
+  @HiveField(6)
   other,
 }
 
