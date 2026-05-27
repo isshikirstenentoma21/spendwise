@@ -61,6 +61,7 @@ class ExpenseTile extends StatelessWidget {
       ExpenseCategory.shopping => Icons.shopping_bag_outlined,
       ExpenseCategory.utilities => Icons.receipt_long_outlined,
       ExpenseCategory.school => Icons.school_outlined,
+      ExpenseCategory.entertainment => Icons.movie_outlined,
       ExpenseCategory.other => Icons.more_horiz,
     };
   }
