@@ -97,11 +97,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _export() async {
-    final path = await ExportService.exportCurrentMonth();
-    if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Exported to: $path')));
+    try {
+      final path = await ExportService.exportCurrentMonth();
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Exported to: $path')));
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Export failed: $error')));
+    }
   }
 
   void _maybeShowBudgetWarning(double percent, double budget) {
