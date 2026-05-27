@@ -25,7 +25,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleController;
   late final TextEditingController _amountController;
-  late final TextEditingController _noteController;
   late ExpenseCategory _category;
   late DateTime _date;
 
@@ -37,7 +36,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _amountController = TextEditingController(
       text: expense == null ? '' : expense.amount.toStringAsFixed(2),
     );
-    _noteController = TextEditingController(text: expense?.note ?? '');
     _category = expense?.category ?? ExpenseCategory.food;
     _date = expense?.date ?? DateTime.now();
   }
@@ -46,7 +44,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   void dispose() {
     _titleController.dispose();
     _amountController.dispose();
-    _noteController.dispose();
     super.dispose();
   }
 
@@ -68,23 +65,41 @@ class _ExpenseFormState extends State<ExpenseForm> {
         amount: double.parse(_amountController.text.trim()),
         category: _category,
         date: _date,
-        note: _noteController.text.trim(),
+        note: widget.initialExpense?.note ?? '',
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    const borderColor = Color(0xFF9EA0B8);
+    const buttonColor = Color(0xFF5368C9);
+
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      backgroundColor: const Color(0xFFFCF8FF),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFBFC8FF),
+        foregroundColor: const Color(0xFF172033),
+        title: Text(widget.title),
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 24),
           children: [
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(
+                labelText: 'Expense Title',
+                prefixIcon: Icon(Icons.label_outline),
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: buttonColor, width: 2),
+                ),
+              ),
               validator: (value) {
                 if ((value?.trim() ?? '').isEmpty) return 'Title is required.';
                 return null;
@@ -98,19 +113,37 @@ class _ExpenseFormState extends State<ExpenseForm> {
               ),
               decoration: const InputDecoration(
                 labelText: 'Amount',
-                prefixText: 'PHP ',
+                prefixText: '₱ ',
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: buttonColor, width: 2),
+                ),
               ),
               validator: (value) {
                 final amount = double.tryParse(value?.trim() ?? '');
-                if (amount == null || amount <= 0)
+                if (amount == null || amount <= 0) {
                   return 'Enter a valid amount.';
+                }
                 return null;
               },
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<ExpenseCategory>(
               initialValue: _category,
-              decoration: const InputDecoration(labelText: 'Category'),
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                prefixIcon: Icon(Icons.category_outlined),
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: buttonColor, width: 2),
+                ),
+              ),
               items: ExpenseCategory.values
                   .map(
                     (category) => DropdownMenuItem(
@@ -122,23 +155,53 @@ class _ExpenseFormState extends State<ExpenseForm> {
               onChanged: (value) => setState(() => _category = value!),
             ),
             const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: _pickDate,
-              icon: const Icon(Icons.calendar_today_outlined),
-              label: Text(DateFormat.yMMMd().format(_date)),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _noteController,
-              minLines: 3,
-              maxLines: 5,
-              decoration: const InputDecoration(labelText: 'Note'),
+            InkWell(
+              onTap: _pickDate,
+              borderRadius: BorderRadius.circular(4),
+              child: InputDecorator(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: borderColor),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 13,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_today_outlined,
+                      color: buttonColor,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(DateFormat.yMMMd().format(_date))),
+                    TextButton(
+                      onPressed: _pickDate,
+                      child: const Text('Change'),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _submit,
-              icon: const Icon(Icons.save_outlined),
-              label: Text(widget.submitLabel),
+            SizedBox(
+              height: 46,
+              width: double.infinity,
+              child: FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                onPressed: _submit,
+                icon: const Icon(Icons.save_outlined, size: 18),
+                label: Text(widget.submitLabel),
+              ),
             ),
           ],
         ),
