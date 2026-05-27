@@ -15,9 +15,9 @@ enum ExpenseCategory {
   @HiveField(4)
   school,
   @HiveField(5)
-  entertainment;
-  @HiveField(6)
   other,
+  @HiveField(6)
+  entertainment,
 }
 
 extension ExpenseCategoryLabel on ExpenseCategory {
@@ -28,6 +28,7 @@ extension ExpenseCategoryLabel on ExpenseCategory {
       ExpenseCategory.shopping => 'Shopping',
       ExpenseCategory.utilities => 'Utilities',
       ExpenseCategory.school => 'School',
+      ExpenseCategory.entertainment => 'Entertainment',
       ExpenseCategory.other => 'Other',
     };
   }
